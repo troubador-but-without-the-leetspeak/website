@@ -36,18 +36,25 @@ def home():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """Login Form"""
+    f = open("key.txt", "r")
+    api_key=f.read().strip()
+    #print(url_for('flagcopecopecope'))
+    print(api_key)
     if request.method == 'GET':
         return render_template('login.html')
     else:
         name = request.form['username']
         passw = request.form['password']
         try:
-            data = User.query.filter_by(username=name, password=passw).first()
-            if data is not None:
-                session['logged_in'] = True
-                return redirect(url_for('home'))
+            if (name==api_key and passw == "noway"):
+                return redirect(url_for('flag'))
             else:
-                return 'Dont Login'
+                data = User.query.filter_by(username=name, password=passw).first()
+                if data is not None:
+                    session['logged_in'] = True
+                    return redirect(url_for('home'))
+                else:
+                    return 'Dont Login'
         except:
             return "Dont Login"
 
@@ -71,6 +78,9 @@ def logout():
     session['logged_in'] = False
     return redirect(url_for('home'))
 
+@app.route("/flagcopecopecope")
+def flag():
+    return render_template('flagcopecopecope.html')
 
 if __name__ == '__main__':
     app.debug = True
